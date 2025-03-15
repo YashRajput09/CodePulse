@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
+    select: false,
     required: true,
     minlength: [8, "Password must be at least 8 characters long"],
     validator: function (value) {
@@ -28,9 +29,13 @@ const userSchema = new mongoose.Schema({
   mobileNumber: {
     type: Number,
     required: true,
-    unique: true,
+    // unique: true,
     minlength: 10,
     maxlength: 10,
+    validator: function(value){
+      return validator.isMobilePhone(value, "en-IN")
+    },
+    message: "Invalid mobile number || format",
   },
   profileImage: {
     public_id: { type: String, required: true },
@@ -43,8 +48,8 @@ const userSchema = new mongoose.Schema({
     enum: ["Admin", "Member"],
     default: "Member",
   },
-  cratedAt: { type: Date, default: Date.now },
   jwttoken: { type: String },
+  cratedAt: { type: Date, default: Date.now },
 });
 
 const User = mongoose.model("User", userSchema);

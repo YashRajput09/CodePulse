@@ -11,10 +11,13 @@ const createTokenAndSaveCookie = async (userId, res) => {
     res.cookie("jwttoken", token, {
         httpOnly: true,
         sameSite: "none",
-        secure: false,  // For development (set to true in production with HTTPS) 
+        secure: process.env.NODE_ENV === "production",  // For development (set to true in production with HTTPS) 
         maxAge: 24 * 60 * 60 * 1000,
-    });
-    await userModel.findByIdAndUpdate(userId, { token });
+    }); 
+// console.log("token : ", token);
+
+    // logger.info(`Token created and saved in cookie: ${token}`);
+    await userModel.findByIdAndUpdate(userId, { jwttoken: token });
     return token;
 }
 
